@@ -13,9 +13,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Nepali Sentiment Intelligence",
-  description: "AI Powered Sentiment Analysis by Sameer Dorjee",
+  description: "AI Powered Nepali Sentiment Analysis",
+  manifest: "/manifest.json",
+  themeColor: "#9333ea",
 };
 
 export default function RootLayout({
