@@ -1,36 +1,170 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🧠 Nepali Sentiment Intelligence
 
-## Getting Started
+AI-powered Nepali Sentiment Analysis Web Application built using XLM-RoBERTa, Next.js, and deployed with HuggingFace Spaces + Vercel.
 
-First, run the development server:
+🚀 Live Demo: https://nepali-sentiment-frontend.vercel.app/
 
-```bash
+📌 Project Overview
+
+Nepali Sentiment Intelligence is a deep learning-based web application that analyzes Nepali text and classifies it into:
+
+✅ Positive
+
+❌ Negative
+
+😐 Neutral
+
+The system uses a fine-tuned XLM-RoBERTa transformer model for accurate multilingual sentiment detection.
+
+The frontend is built with Next.js 16 (App Router) and supports:
+
+🌙 Dark / Light mode
+
+📊 Confidence visualization (Chart.js)
+
+🔊 Speech output
+
+📱 Installable as a Progressive Web App (PWA)
+
+💻 Desktop app support
+
+🏗️ Architecture
+
+User → Next.js Frontend → REST API → HuggingFace Model → Prediction → Response → Visualization
+
+🔹 Frontend
+
+Next.js 16
+
+TypeScript
+
+Tailwind CSS
+
+Framer Motion
+
+Chart.js
+
+next-themes
+
+🔹 Backend
+
+FastAPI
+
+Transformers (HuggingFace)
+
+XLM-RoBERTa model
+
+Deployed on HuggingFace Spaces
+
+🔹 Deployment
+
+Frontend → Vercel
+
+Backend → HuggingFace Spaces
+
+PWA enabled (Service Worker + Manifest)
+
+⚙️ How It Works
+
+User enters Nepali text.
+
+Frontend sends POST request to /predict API.
+
+HuggingFace model processes text.
+
+Model returns:
+
+Sentiment label
+
+Confidence score
+
+Frontend displays:
+
+Emoji indicator
+
+Confidence %
+
+Bar chart visualization
+
+Optional voice feedback
+
+📦 Installation (Local Setup)
+1️⃣ Clone Repository
+git clone https://github.com/sameerdorjee07-cell/nepali-sentiment-frontend.git
+cd nepali-sentiment-frontend
+2️⃣ Install Dependencies
+npm install
+3️⃣ Run Development Server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+http://localhost:3000
+🔥 Production Build
+npm run build
+npm start
+📱 PWA Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Installable on Desktop
 
-## Learn More
+Installable on Mobile
 
-To learn more about Next.js, take a look at the following resources:
+Offline support via Service Worker
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Custom app icon
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Standalone window mode
 
-## Deploy on Vercel
+🧠 Model Details
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Base Model: xlm-roberta-base
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Architecture: Transformer Encoder
+
+Type: Multilingual Language Model
+
+Fine-tuned for Nepali Sentiment Classification
+
+Why XLM-RoBERTa?
+
+Supports multiple languages
+
+Strong contextual understanding
+
+Better performance than traditional LSTM/Naive Bayes
+
+📊 Example Output
+
+Input:
+
+यो सेवा एकदमै राम्रो छ।
+
+Output:
+
+Positive
+Confidence: 98.86%
+🎓 Academic Context
+
+This project was developed as a 6th Semester Major Project focusing on:
+
+Deep Learning
+
+NLP (Natural Language Processing)
+
+Transformer Models
+
+Web Application Development
+
+PWA Deployment
+
+👨‍💻 Author
+
+Built with ❤️ by Sameer Dorjee
+
+GitHub: https://github.com/sameerdorjee07-cell
+
+Project: Nepali Sentiment Intelligence
+
+📜 License
+
+This project is developed for academic and research purposes.
