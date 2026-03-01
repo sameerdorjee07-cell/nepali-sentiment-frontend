@@ -3,7 +3,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Particles from "@tsparticles/react";
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { TypeAnimation } from "react-type-animation";
 import { Sun, Moon } from "lucide-react";
@@ -16,9 +23,13 @@ export default function Home() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+  setMounted(true);
+  }, []);
 
-const analyze = async () => {
+  const analyze = async () => {
     if (!text.trim()) return;
 
     setLoading(true);
@@ -26,7 +37,7 @@ const analyze = async () => {
 
     try {
       const res = await fetch(
-        "https://nepali-sentiment-api-kpfz.onrender.com/predict",
+        "https://sameerdorjee07-nepali-sentiment-api.hf.space/predict",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -37,8 +48,29 @@ const analyze = async () => {
       const data = await res.json();
 
       if (res.ok) {
-        setResult(data);
-        speakResult(data.sentiment);
+        const labelMap: any = {
+          LABEL_0: "Negative",
+          LABEL_1: "Neutral",
+          LABEL_2: "Positive",
+        };
+
+        const sentiment = labelMap[data.label] || "Neutral";
+        const confidence = data.score;
+
+        const probabilities = {
+          Negative: sentiment === "Negative" ? confidence : 0,
+          Neutral: sentiment === "Neutral" ? confidence : 0,
+          Positive: sentiment === "Positive" ? confidence : 0,
+        };
+
+        const formatted = {
+          sentiment,
+          confidence,
+          probabilities,
+        };
+
+        setResult(formatted);
+        speakResult(sentiment);
       }
     } catch {
       alert("Backend not reachable yet.");
@@ -68,70 +100,59 @@ const analyze = async () => {
           {
             label: "Confidence %",
             data: [
-              result?.probabilities?.Negative * 100 || 0,
-              result?.probabilities?.Neutral * 100 || 0,
-              result?.probabilities?.Positive * 100 || 0,
+              result.probabilities.Negative * 100,
+              result.probabilities.Neutral * 100,
+              result.probabilities.Positive * 100,
             ],
-            backgroundColor: [
-              "#ef4444",
-              "#eab308",
-              "#22c55e",
-            ],
+            backgroundColor: ["#ef4444", "#eab308", "#22c55e"],
+            borderRadius: 8,
           },
         ],
       }
     : null;
 
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-hidden transition-all duration-500">
-
-      {/* Animated Glow Background */}
+    <div className="relative min-h-screen transition-colors duration-500">
+      {/* Animated Background Glow */}
       <div className="absolute inset-0 -z-20 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 blur-3xl animate-pulse" />
 
       {/* Particles */}
       <Particles
-  id="tsparticles"
-  className="absolute inset-0 -z-10"
-  options={{
-    fullScreen: false,
-    background: {
-      color: { value: "transparent" },
-    },
-    particles: {
-      number: {
-        value: 40,
-      },
-      size: {
-        value: 2,
-      },
-      move: {
-        enable: true,
-        speed: 1,
-      },
-      links: {
-        enable: true,
-        color: "#a855f7",
-        distance: 150,
-      },
-    },
-  }}
-/>
-      <div className="p-10 max-w-4xl mx-auto">
+        id="tsparticles"
+        className="absolute inset-0 -z-10"
+        options={{
+          fullScreen: false,
+          particles: {
+            number: { value: 40 },
+            size: { value: 2 },
+            move: { enable: true, speed: 1 },
+            links: {
+              enable: true,
+              color: "#a855f7",
+              distance: 150,
+            },
+          },
+        }}
+      />
 
+      <div className="p-10 max-w-4xl mx-auto">
         {/* Theme Toggle */}
         <div className="flex justify-end mb-4">
           <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 rounded-full bg-purple-600 hover:scale-110 transition"
-          >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+  className="p-2 rounded-full bg-purple-600 hover:scale-110 transition"
+>
+  {mounted && (
+    theme === "dark" ? <Sun size={18} /> : <Moon size={18} />
+  )}
+</button>
         </div>
 
         {/* Title */}
         <motion.h1
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
           className="text-5xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent"
         >
           🧠 Nepali Sentiment Intelligence
@@ -153,9 +174,9 @@ const analyze = async () => {
         </div>
 
         {/* Input Card */}
-        <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-6 shadow-2xl">
+        <div className="backdrop-blur-lg bg-gray-100 dark:bg-white/10 border-gray-300 dark:border-white/20 rounded-2xl p-6 shadow-2xl">
           <textarea
-            className="w-full p-4 rounded-xl bg-black/40 border border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full p-4 rounded-xl bg-white dark:bg-black/40 text-black dark:text-white border border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             rows={4}
             placeholder="Enter Nepali text..."
             value={text}
@@ -166,70 +187,35 @@ const analyze = async () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={analyze}
-            className="mt-6 w-full bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-xl font-semibold shadow-lg hover:shadow-purple-500/50 transition-all"
+            className="mt-6 w-full bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 p-3 rounded-xl font-semibold shadow-xl hover:shadow-pink-500/40 transition-all duration-300"
           >
             Analyze Sentiment 🚀
           </motion.button>
         </div>
 
-        {/* Loading Shimmer */}
+        {/* Loading */}
         {loading && (
-          <div className="mt-6 h-2 bg-purple-500/20 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: "100%" }}
-              transition={{ repeat: Infinity, duration: 1 }}
-              className="h-full w-1/3 bg-gradient-to-r from-purple-400 to-pink-500"
-            />
+          <div className="mt-6 text-center text-purple-400">
+            Analyzing...
           </div>
         )}
 
         {/* Result */}
         {result && (
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
             className="mt-10 backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-8 shadow-2xl"
           >
             <div className="text-center">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-                className="text-6xl mb-4"
-              >
-                {getEmoji()}
-              </motion.div>
-
+              <div className="text-6xl mb-4">{getEmoji()}</div>
               <h2 className="text-2xl font-bold">{result.sentiment}</h2>
               <p className="text-purple-300">
-                {(result.confidence * 100).toFixed(2)}%
+                Confidence: {(result.confidence * 100).toFixed(2)}%
               </p>
             </div>
 
-            {/* Animated Bars */}
-            <div className="mt-6 space-y-4">
-              {["Negative", "Neutral", "Positive"].map((label) => {
-                const value =
-                  result?.probabilities?.[label] * 100 || 0;
-
-                return (
-                  <div key={label}>
-                    <div className="flex justify-between mb-1">
-                      <span>{label}</span>
-                      <span>{value.toFixed(1)}%</span>
-                    </div>
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${value}%` }}
-                      transition={{ duration: 1 }}
-                      className="h-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500"
-                    />
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Chart */}
             {chartData && (
               <div className="mt-8">
                 <Bar data={chartData} />
@@ -237,6 +223,16 @@ const analyze = async () => {
             )}
           </motion.div>
         )}
+
+        {/* Footer Branding */}
+        <div className="mt-16 text-center text-sm text-gray-400">
+          <p>
+            🚀 Built with XLM-RoBERTa & Next.js by{" "}
+            <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent font-bold">
+              Sameer Dorjee
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );

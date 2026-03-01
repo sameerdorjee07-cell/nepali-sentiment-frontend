@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+});
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);
